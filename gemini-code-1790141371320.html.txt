@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nures desk!</title>
+    <!-- Retro Pixel Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: 'Press Start 2P', cursive, sans-serif;
+            color: #000000;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background-color: #D8F3DC; /* Light Matcha Green */
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.5s ease;
+        }
+        
+        /* Night Mode Theme */
+        body.night-mode {
+            background-color: #1a1b26;
+        }
+        body.night-mode * {
+            color: #c0caf5;
+        }
+        body.night-mode .pixel-box {
+            border-color: #7aa2f7;
+            box-shadow: 4px 4px 0px #7aa2f7;
+            background-color: #24283b;
+        }
+        body.night-mode .desk-surface {
+            background-color: #1f2335 !important;
+        }
+
+        /* Pixel Border Styling */
+        .pixel-box {
+            border: 4px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+            image-rendering: pixelated;
+        }
+        .pixel-btn {
+            border: 3px solid #000000;
+            box-shadow: 3px 3px 0px #000000;
+            transition: transform 0.05s, box-shadow 0.05s;
+            cursor: pointer;
+        }
+        .pixel-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #000000;
+        }
+        
+        /* Color Palette */
+        .bg-matcha { background-color: #D8F3DC; }
+        .bg-matcha-dark { background-color: #B7E4C7; }
+        .bg-pink-pastel { background-color: #FFC0CB; }
+        .bg-pink-light { background-color: #FFE4E1; }
+        
+        /* Larger Pixel Font for Letters */
+        .font-pixel-letter {
+            font-family: 'Press Start 2P', cursive, sans-serif !important;
+            color: #2b1810 !important;
+            font-size: 11px !important;
+            line-height: 2.2 !important;
+        }
+
+        /* Vintage Dusted Paper */
+        .vintage-paper {
+            background-color: #F4EAE1;
+            background-image: radial-gradient(#d5c3b1 1px, transparent 0);
+            background-size: 16px 16px;
+            border: 4px solid #4a3525;
+            box-shadow: inset 0 0 30px rgba(74, 53, 37, 0.3), 6px 6px 0px #000;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes hop {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+            100% { transform: translateY(0px); }
+        }
+        .bunny-anim {
+            animation: hop 2s infinite ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
+        }
+        .candle-flame {
+            animation: flicker 0.6s infinite ease-in-out;
+        }
+
+        /* Free Draggable item styles */
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            z-index: 10;
+            touch-action: none;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== IPHONE LOCK SCREEN ==================== -->
+    <div id="lock-screen" class="fixed inset-0 bg-pink-pastel z-50 flex flex-col items-center justify-center p-4">
+        <div class="w-80 bg-white pixel-box p-6 rounded-3xl flex flex-col items-center gap-4">
+            <div class="text-[8px] text-gray-500 mb-1">12:00 PM</div>
+            <div class="text-xs text-center font-bold mb-2">NURE'S PHONE</div>
+            
+            <div id="passcode-dots" class="flex gap-4 my-2">
+                <div class="w-4 h-4 rounded-full border-2 border-black bg-white"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-black bg-white"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-black bg-white"></div>
+                <div class="w-4 h-4 rounded-full border-2 border-black bg-white"></div>
+            </div>
+
+            <div id="passcode-msg" class="text-[8px] text-pink-600 h-4 text-center">ENTER PASSCODE</div>
+
+            <div class="grid grid-cols-3 gap-3 w-full mt-2">
+                <button onclick="pressKey('1')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">1</button>
+                <button onclick="pressKey('2')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">2</button>
+                <button onclick="pressKey('3')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">3</button>
+                <button onclick="pressKey('4')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">4</button>
+                <button onclick="pressKey('5')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">5</button>
+                <button onclick="pressKey('6')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">6</button>
+                <button onclick="pressKey('7')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">7</button>
+                <button onclick="pressKey('8')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">8</button>
+                <button onclick="pressKey('9')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">9</button>
+                <button onclick="clearKey()" class="pixel-btn bg-red-300 p-3 text-center text-[7px] font-bold">C</button>
+                <button onclick="pressKey('0')" class="pixel-btn bg-matcha p-3 text-center text-xs font-bold">0</button>
+                <button onclick="checkPass()" class="pixel-btn bg-pink-300 p-3 text-center text-[7px] font-bold">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIVE NOTIFICATION POPUP -->
+    <div id="live-notification" class="hidden fixed top-6 right-6 z-50 bg-white pixel-box p-3 max-w-xs animate-bounce">
+        <div class="text-[7px] font-bold text-pink-600 mb-1">✨ NURE'S DESK REMINDER</div>
+        <div id="notif-text" class="text-[7px]">Time to sip some matcha and relax! 🍵</div>
+    </div>
+
+    <!-- ==================== MAIN ROOM: NURES DESK! ==================== -->
+    <div id="main-room" class="relative w-full max-w-5xl h-[94vh] bg-matcha pixel-box flex flex-col justify-between p-4 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="w-full bg-white pixel-box p-3 flex justify-between items-center z-20">
+            <div class="text-xs font-bold flex items-center gap-2">
+                <span>🍵</span> nures desk! <span>✨</span>
+            </div>
+            <!-- Controls & Toggles -->
+            <div class="flex gap-2 items-center">
+                <button onclick="toggleDayNight()" id="btn-theme" class="pixel-btn bg-yellow-200 text-[7px] p-2">☀️ Day</button>
+                <button onclick="toggleStickerMode()" id="btn-sticker" class="pixel-btn bg-pink-300 text-[7px] p-2">💖 Stickers</button>
+                <button onclick="toggleAudio('rain')" id="btn-rain" class="pixel-btn bg-pink-light text-[7px] p-2">🌧️ Rain</button>
+                <button onclick="toggleAudio('ocean')" id="btn-ocean" class="pixel-btn bg-pink-light text-[7px] p-2">🌊 Ocean</button>
+            </div>
+        </div>
+
+        <!-- Room Scene Area -->
+        <div id="room-canvas-area" class="relative flex-1 bg-pink-light pixel-box my-3 p-4 flex flex-col justify-between items-center overflow-hidden">
+            
+            <!-- Wall Features -->
+            <div class="w-full flex justify-between items-center px-4 z-10">
+                <!-- F1 Poster -->
+                <div onclick="openModal('f1-modal')" class="cursor-pointer pixel-btn bg-white p-2.5 flex flex-col items-center animate-float">
+                    <div class="text-[9px] font-bold mb-1">🏎️ F1 MONACO GP</div>
+                    <div class="w-24 h-14 bg-red-500 border-2 border-black flex items-center justify-center text-white text-[7px] text-center p-1">
+                        COUNTDOWN & MOODBOARD
+                    </div>
+                </div>
+
+                <!-- Tamagotchi Bunny Pet (Mochi) -->
+                <div id="desk-pet" onclick="openModal('bunny-modal')" class="cursor-pointer z-30 bunny-anim flex flex-col items-center">
+                    <div id="bunny-bubble" class="hidden bg-white pixel-box p-1 text-[6px] mb-1 text-center">Hop hop! Feed me matcha treats! 🐰</div>
+                    <div class="text-3xl bg-white/90 p-2 pixel-box rounded-full shadow">🐰</div>
+                    <span class="text-[6px] bg-white px-1 mt-0.5 border border-black font-bold">Mochi (❤️ <span id="bunny-heart-count">100</span>%)</span>
+                </div>
+
+                <!-- Birthday Cake Mini-Game Button -->
+                <div onclick="openModal('cake-modal')" class="cursor-pointer pixel-btn bg-amber-200 p-2.5 flex flex-col items-center animate-float">
+                    <div class="text-[9px] font-bold mb-1">🎂 BIRTHDAY CAKE</div>
+                    <div class="w-24 h-14 bg-white border-2 border-black flex items-center justify-center text-[7px] text-center p-1">
+                        BLOW CANDLES!
+                    </div>
+                </div>
+
+                <!-- Celestial Easel -->
+                <div onclick="openModal('easel-modal')" class="cursor-pointer pixel-btn bg-matcha-dark p-2.5 flex flex-col items-center animate-float">
+                    <div class="text-[9px] font-bold mb-1">🎨 ART EASEL</div>
+                    <div class="w-24 h-14 bg-white border-2 border-black flex items-center justify-center text-[7px] text-center p-1">
+                        PAINT & DRAW
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Surface (Draggable Items Container) -->
+            <div class="w-full desk-surface bg-white pixel-box p-4 flex flex-col gap-3 relative min-h-[170px]" id="desk-surface">
+                <div class="text-[8px] text-gray-500 text-center border-b-2 border-black pb-1 flex justify-between items-center">
+                    <span>✨ DRAGGABLE DESK ITEMS & EMOTIONAL FEATURES ✨</span>
+                    <div class="flex gap-1">
+                        <button onclick="openModal('hug-modal')" class="pixel-btn bg-pink-400 text-white text-[6px] px-2 py-0.5 font-bold">🧸 Comfort Hug</button>
+                        <button onclick="openModal('jar-modal')" class="pixel-btn bg-amber-300 text-[6px] px-2 py-0.5 font-bold">🍯 Compliment Jar</button>
+                        <button onclick="openModal('journal-modal')" class="pixel-btn bg-pink-300 text-[6px] px-2 py-0.5">📖 Journal (<span id="journal-count">0</span>/3)</button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10 min-h-[110px]">
+                    
+                    <!-- 3 Pixel Books (Draggable) -->
+                    <div id="item-books" class="draggable bg-white p-2 pixel-box flex flex-col gap-1" style="left: 10px; top: 35px;">
+                        <div class="text-[7px] font-bold text-center drag-handle cursor-grab">📚 LEIGH RIVERS</div>
+                        <button onclick="openBook('Insatiable', 1)" class="pixel-btn bg-stone-900 text-white text-[6px] p-1.5 text-left flex items-center gap-1">
+                            <span class="w-2 h-2 bg-red-600 inline-block"></span> Insatiable
+                        </button>
+                        <button onclick="openBook('Voracious', 2)" class="pixel-btn bg-stone-900 text-white text-[6px] p-1.5 text-left flex items-center gap-1">
+                            <span class="w-2 h-2 bg-purple-600 inline-block"></span> Voracious
+                        </button>
+                        <button onclick="openBook('Restitution', 3)" class="pixel-btn bg-stone-900 text-white text-[6px] p-1.5 text-left flex items-center gap-1">
+                            <span class="w-2 h-2 bg-green-600 inline-block"></span> Restitution
+                        </button>
+                    </div>
+
+                    <!-- Interactive Matcha Maker & Headphones (Draggable) -->
+                    <div id="item-matcha" class="draggable bg-white p-2 pixel-box flex flex-col gap-2" style="left: 230px; top: 35px;">
+                        <div class="text-[6px] font-bold text-center drag-handle cursor-grab">🍵 DRINK & AUDIO</div>
+                        <div onclick="openModal('matcha-modal')" class="cursor-pointer pixel-btn bg-matcha p-1.5 text-center flex flex-col items-center">
+                            <span class="text-base">🍵</span>
+                            <span class="text-[6px] mt-0.5 font-bold">MATCHA MAKER</span>
+                        </div>
+                        <div onclick="openModal('spotify-modal')" class="cursor-pointer pixel-btn bg-pink-pastel p-1 text-center flex items-center justify-center gap-1">
+                            <span>🎧</span> <span class="text-[6px]">Spotify</span>
+                        </div>
+                    </div>
+
+                    <!-- Nail Salon & Pinterest (Draggable) -->
+                    <div id="item-magazine" class="draggable bg-white p-2 pixel-box flex flex-col gap-1 items-center justify-center" style="left: 450px; top: 35px;">
+                        <div class="text-[6px] font-bold text-center drag-handle cursor-grab mb-1">💅 NAILS & MORE</div>
+                        <button onclick="openModal('nail-modal')" class="pixel-btn bg-pink-pastel text-[6px] p-1 w-full text-center font-bold">💅 Nail Salon</button>
+                        <button onclick="openModal('pinterest-modal')" class="pixel-btn bg-matcha text-[6px] p-1 w-full text-center font-bold">📖 Pinterest</button>
+                    </div>
+
+                    <!-- 4 Wax-Sealed Letters + Audio Cassette (Draggable) -->
+                    <div id="item-letters" class="draggable bg-white p-2 pixel-box flex flex-col gap-1" style="left: 620px; top: 35px;">
+                        <div class="text-[7px] font-bold text-center drag-handle cursor-grab">💌 WAX & CASSETTE</div>
+                        <button onclick="openWaxSeal(1)" class="pixel-btn bg-pink-200 text-[6px] p-1 text-center">💖 Moon's Letter</button>
+                        <button onclick="openWaxSeal(2)" class="pixel-btn bg-pink-200 text-[6px] p-1 text-center">💖 Sadi's Letter</button>
+                        <button onclick="openWaxSeal(3)" class="pixel-btn bg-pink-200 text-[6px] p-1 text-center">💖 Tara's Letter</button>
+                        <button onclick="openWaxSeal(4)" class="pixel-btn bg-pink-200 text-[6px] p-1 text-center">💖 Samiya's Letter</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="w-full bg-white pixel-box p-2 text-[7px] text-center z-20">
+            nures desk! - CREATED WITH 💖 FOR NURE
+        </div>
+
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- BIRTHDAY CAKE & CANDLE BLOWING MODAL -->
+    <div id="cake-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center flex flex-col items-center">
+            <button onclick="closeModal('cake-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-pink-600 mb-3">🎂 NURE'S BIRTHDAY CAKE 🎂</div>
+            
+            <div class="w-48 h-40 bg-pink-100 pixel-box flex flex-col items-center justify-center relative my-3 p-2">
+                <div class="flex gap-4 mb-2">
+                    <div class="flex flex-col items-center">
+                        <div id="flame-1" class="w-3 h-4 bg-yellow-400 rounded-full candle-flame"></div>
+                        <div class="w-2 h-8 bg-red-400 border border-black"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="flame-2" class="w-3 h-4 bg-yellow-400 rounded-full candle-flame"></div>
+                        <div class="w-2 h-8 bg-blue-400 border border-black"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div id="flame-3" class="w-3 h-4 bg-yellow-400 rounded-full candle-flame"></div>
+                        <div class="w-2 h-8 bg-purple-400 border border-black"></div>
+                    </div>
+                </div>
+                <div class="w-36 h-12 bg-pink-300 border-2 border-black rounded flex items-center justify-center text-[7px] font-bold">
+                    HAPPY BIRTHDAY NURE!
+                </div>
+            </div>
+
+            <p id="cake-status" class="text-[7px] text-gray-600 my-2">Click the button below to blow out the candles and make a wish!</p>
+            <div class="flex gap-2 w-full mt-2">
+                <button onclick="resetCake()" class="pixel-btn bg-red-300 p-2 font-bold text-[7px] flex-1">🔄 REMAKE / LIT CANDLES</button>
+                <button onclick="blowCandles()" class="pixel-btn bg-pink-300 p-2 font-bold text-[7px] flex-1">🌬️ BLOW CANDLES</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOCHI BUNNY TAMAGOTCHI FEEDING MODAL -->
+    <div id="bunny-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center flex flex-col items-center">
+            <button onclick="closeModal('bunny-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-emerald-600 mb-3">🐰 MOCHI THE BUNNY TAMAGOTCHI 🐰</div>
+            
+            <div class="text-5xl my-4 bunny-anim bg-pink-50 p-4 pixel-box rounded-full">🐰</div>
+            
+            <div class="w-full bg-gray-200 border-2 border-black h-5 my-2 relative overflow-hidden">
+                <div id="bunny-meter-bar" class="h-full bg-pink-400 w-full transition-all duration-300"></div>
+                <span class="absolute inset-0 text-[7px] flex items-center justify-center font-bold">HAPPINESS: <span id="bunny-happiness-val">100</span>%</span>
+            </div>
+
+            <p id="bunny-chat" class="text-[7px] text-gray-600 my-2">"Mochi loves spending time with Nure at the cozy desk!"</p>
+
+            <div class="grid grid-cols-2 gap-2 w-full mt-2 text-[7px]">
+                <button onclick="feedBunny('matcha')" class="pixel-btn bg-matcha p-2.5 font-bold">🍵 Feed Matcha Treat</button>
+                <button onclick="feedBunny('headpats')" class="pixel-btn bg-pink-300 p-2.5 font-bold">💖 Give Headpats</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ART EASEL MODAL WITH REMAKE BUTTON -->
+    <div id="easel-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white pixel-box p-5 relative flex flex-col items-center">
+            <button onclick="closeModal('easel-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold mb-3">🎨 CELESTIAL CANVAS</div>
+            
+            <canvas id="paint-canvas" width="340" height="240" class="border-4 border-black bg-white cursor-crosshair mb-3"></canvas>
+            
+            <div class="w-full flex flex-col gap-2 text-[7px]">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold">COLOR:</span>
+                    <input type="color" id="color-picker" value="#000000" onchange="setBrushColor(this.value)" class="w-8 h-8 border-2 border-black cursor-pointer">
+                    <button onclick="setBrushColor('#000000')" class="w-6 h-6 bg-black border border-black"></button>
+                    <button onclick="setBrushColor('#FFC0CB')" class="w-6 h-6 bg-pink-300 border border-black"></button>
+                    <button onclick="setBrushColor('#D8F3DC')" class="w-6 h-6 bg-green-200 border border-black"></button>
+                    <button onclick="setBrushColor('#C084FC')" class="w-6 h-6 bg-purple-300 border border-black"></button>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="clearCanvas()" class="pixel-btn bg-red-300 p-2 flex-1">🔄 REMAKE / CLEAR</button>
+                    <button onclick="completeArtGame()" class="pixel-btn bg-matcha p-2 flex-1">💾 FINISH & UNLOCK JOURNAL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMFORT HUG MODAL -->
+    <div id="hug-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center flex flex-col items-center">
+            <button onclick="closeModal('hug-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-pink-600 mb-3">🧸 NURE'S COMFORT HUG ZONE 🧸</div>
+            <div class="text-4xl my-3 animate-bounce">🫂</div>
+            <p class="text-[7px] mb-4 leading-relaxed">
+                Having a rough day? Take a deep breath, Nure. You are so fiercely loved, appreciated, and never alone. Mochi and all your besties are right here cheering for you!
+            </p>
+            <button onclick="triggerComfortHug()" class="pixel-btn bg-pink-300 p-3 w-full font-bold text-[8px]">
+                ✨ ACTIVATE NIGHT-MODE & COMFORT MUSIC ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- COMPLIMENT JAR MODAL -->
+    <div id="jar-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center flex flex-col items-center">
+            <button onclick="closeModal('jar-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-amber-700 mb-3">🍯 REASONS WHY WE LOVE YOU JAR</div>
+            <div class="text-4xl my-2">⭐</div>
+            <div id="jar-message-box" class="bg-amber-50 border-2 border-amber-900 p-4 text-[7px] mb-4 min-h-[60px] flex items-center justify-center font-pixel-letter leading-relaxed">
+                Click the button below to pull out a sweet note or inside joke from your friends!
+            </div>
+            <button onclick="pullJarNote()" class="pixel-btn bg-amber-300 p-3 w-full font-bold text-[8px]">
+                🫙 PULL A SWEET NOTE (<span id="jar-count">0</span> opened)
+            </button>
+        </div>
+    </div>
+
+    <!-- AUDIO CASSETTE PLAYER MODAL -->
+    <div id="cassette-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-sm bg-gray-900 text-white pixel-box p-6 relative text-center flex flex-col items-center border-pink-400">
+            <button onclick="closeModal('cassette-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-[8px] font-bold text-pink-400 mb-3">📼 CASSETTE VOICE MEMORY</div>
+            <div class="w-48 h-28 bg-gray-800 border-2 border-white rounded flex flex-col items-center justify-center p-3 my-2 relative">
+                <div class="flex gap-8 items-center">
+                    <div id="cassette-reel-1" class="w-8 h-8 rounded-full border-2 border-white bg-gray-700 flex items-center justify-center text-[6px]">▶</div>
+                    <div id="cassette-reel-2" class="w-8 h-8 rounded-full border-2 border-white bg-gray-700 flex items-center justify-center text-[6px]">▶</div>
+                </div>
+                <div class="text-[6px] mt-3 text-pink-300">FRIENDSHIP MIXTAPE #0410</div>
+            </div>
+            <p id="cassette-status" class="text-[7px] text-gray-300 my-2">Playing heartfelt ambient memory...</p>
+            <button onclick="toggleCassettePlay()" id="cassette-play-btn" class="pixel-btn bg-pink-400 text-white p-2 w-full font-bold text-[7px]">
+                ⏸️ PAUSE / PLAY
+            </button>
+        </div>
+    </div>
+
+    <!-- UNLOCKED JOURNAL MODAL -->
+    <div id="journal-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md vintage-paper p-6 relative max-h-[85vh] overflow-y-auto">
+            <button onclick="closeModal('journal-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-center border-b-2 border-amber-900 pb-2 mb-4">📖 NURE'S SECRET JOURNAL</div>
+            <div id="journal-content" class="font-pixel-letter whitespace-pre-line"></div>
+        </div>
+    </div>
+
+    <!-- BOOK LETTER MODAL -->
+    <div id="book-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-xl vintage-paper p-6 rounded relative max-h-[85vh] overflow-y-auto">
+            <button onclick="closeModal('book-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div id="book-title" class="text-xs font-bold text-center border-b-2 border-amber-900 pb-2 mb-4">BOOK TITLE</div>
+            <div id="book-letter" class="font-pixel-letter whitespace-pre-line"></div>
+        </div>
+    </div>
+
+    <!-- NAIL EXTENSION GAME MODAL -->
+    <div id="nail-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-5 relative flex flex-col items-center max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('nail-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold mb-3">💅 NAIL EXTENSION SALON</div>
+
+            <div class="w-48 h-36 bg-pink-light pixel-box flex items-center justify-center gap-3 relative mb-3 p-2">
+                <div id="nail-1" class="w-8 h-20 bg-pink-300 border-2 border-black rounded-t-lg relative transition-all duration-300 flex flex-col items-center overflow-hidden">
+                    <div id="nail-pattern-1" class="w-full h-4 bg-white/50 hidden"></div>
+                </div>
+                <div id="nail-2" class="w-10 h-24 bg-pink-300 border-2 border-black rounded-t-lg relative transition-all duration-300 flex flex-col items-center overflow-hidden">
+                    <div id="nail-pattern-2" class="w-full h-5 bg-white/50 hidden"></div>
+                </div>
+                <div id="nail-3" class="w-8 h-20 bg-pink-300 border-2 border-black rounded-t-lg relative transition-all duration-300 flex flex-col items-center overflow-hidden">
+                    <div id="nail-pattern-3" class="w-full h-4 bg-white/50 hidden"></div>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-2 text-[6px]">
+                <div>
+                    <span class="font-bold">1. NAIL SHAPE & LENGTH:</span>
+                    <div class="grid grid-cols-4 gap-1 mt-1">
+                        <button onclick="setNailShape('square')" class="pixel-btn bg-matcha p-1">Square</button>
+                        <button onclick="setNailShape('almond')" class="pixel-btn bg-matcha p-1">Almond</button>
+                        <button onclick="setNailShape('coffin')" class="pixel-btn bg-matcha p-1">Coffin</button>
+                        <button onclick="setNailShape('stiletto')" class="pixel-btn bg-matcha p-1">Stiletto</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-bold">2. POLISH COLOR:</span>
+                    <div class="grid grid-cols-5 gap-1 mt-1">
+                        <button onclick="setNailColor('#FFC0CB')" class="pixel-btn bg-pink-300 p-1">Pink</button>
+                        <button onclick="setNailColor('#34D399')" class="pixel-btn bg-emerald-400 p-1 text-white">Matcha</button>
+                        <button onclick="setNailColor('#C084FC')" class="pixel-btn bg-purple-400 p-1 text-white">Taro</button>
+                        <button onclick="setNailColor('#FFFFFF')" class="pixel-btn bg-white p-1">White</button>
+                        <button onclick="setNailColor('#111827')" class="pixel-btn bg-gray-900 p-1 text-white">Noir</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-bold">3. NAIL ART PATTERNS:</span>
+                    <div class="grid grid-cols-4 gap-1 mt-1">
+                        <button onclick="setNailPattern('french')" class="pixel-btn bg-pink-pastel p-1">French Tip</button>
+                        <button onclick="setNailPattern('ombre')" class="pixel-btn bg-pink-pastel p-1">Ombre</button>
+                        <button onclick="setNailPattern('stars')" class="pixel-btn bg-pink-pastel p-1">✨ Stars</button>
+                        <button onclick="setNailPattern('hearts')" class="pixel-btn bg-pink-pastel p-1">💖 Hearts</button>
+                    </div>
+                </div>
+                <div class="mt-1">
+                    <button onclick="completeNailGame()" class="pixel-btn bg-pink-300 w-full p-2 text-center font-bold">✨ FINISH NAILS & UNLOCK JOURNAL ENTRY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATCHA MAKER GAME MODAL -->
+    <div id="matcha-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-5 relative flex flex-col items-center max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('matcha-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold mb-3">🍵 NURE'S MATCHA LAB</div>
+
+            <div class="w-40 h-48 bg-pink-light pixel-box flex flex-col items-center justify-end p-3 relative mb-3">
+                <div id="straw-display" class="absolute top-2 w-2 h-20 bg-pink-400 border border-black z-20 hidden transform -rotate-12 origin-bottom"></div>
+                <div id="matcha-spoon" class="absolute top-2 text-2xl transition-transform duration-300">🥄</div>
+                <div id="matcha-cup" class="w-24 h-32 border-4 border-black bg-white/70 rounded-b-2xl relative overflow-hidden flex flex-col justify-end transition-all duration-300">
+                    <div id="matcha-foam" class="w-full h-4 bg-amber-100 hidden border-b-2 border-black"></div>
+                    <div id="matcha-liquid" class="w-full h-20 bg-emerald-400 transition-colors duration-500 flex items-center justify-center gap-1 flex-wrap p-1 relative">
+                        <span id="boba-container" class="hidden absolute inset-0 flex items-center justify-center gap-1 text-[8px] flex-wrap p-1">🧋 🧋 🧋</span>
+                        <span id="ice-container" class="hidden absolute inset-0 flex items-center justify-center gap-1 text-[9px] flex-wrap p-1">🧊 🧊 🧊</span>
+                        <span id="star-topping" class="hidden text-[10px]">✨</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-2 text-[6px]">
+                <div>
+                    <span class="font-bold">1. MUG SHAPE:</span>
+                    <div class="grid grid-cols-3 gap-1 mt-1">
+                        <button onclick="setMugShape('classic')" class="pixel-btn bg-matcha p-1">Classic Mug</button>
+                        <button onclick="setMugShape('tumbler')" class="pixel-btn bg-matcha p-1">Tall Tumbler</button>
+                        <button onclick="setMugShape('heart')" class="pixel-btn bg-matcha p-1">Heart Jar</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-bold">2. FLAVOR & COLOR:</span>
+                    <div class="grid grid-cols-5 gap-1 mt-1">
+                        <button onclick="setMatchaColor('#34D399')" class="pixel-btn bg-emerald-400 p-1 text-white">Matcha</button>
+                        <button onclick="setMatchaColor('#F472B6')" class="pixel-btn bg-pink-400 p-1 text-white">Berry</button>
+                        <button onclick="setMatchaColor('#C084FC')" class="pixel-btn bg-purple-400 p-1 text-white">Taro</button>
+                        <button onclick="setMatchaColor('#38BDF8')" class="pixel-btn bg-sky-400 p-1 text-white">Ocean</button>
+                        <button onclick="setMatchaColor('#FBBF24')" class="pixel-btn bg-amber-400 p-1 text-white">Mango</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-bold">3. STRAW & EXTRAS:</span>
+                    <div class="grid grid-cols-5 gap-1 mt-1">
+                        <button onclick="setStraw('pink')" class="pixel-btn bg-pink-300 p-1">💖 Straw</button>
+                        <button onclick="setStraw('striped')" class="pixel-btn bg-amber-200 p-1">💈 Straw</button>
+                        <button onclick="toggleTopping('boba')" class="pixel-btn bg-amber-300 p-1">🧋 Boba</button>
+                        <button onclick="toggleTopping('ice')" class="pixel-btn bg-sky-200 p-1">🧊 Ice</button>
+                        <button onclick="toggleTopping('foam')" class="pixel-btn bg-amber-100 p-1">Foam</button>
+                    </div>
+                </div>
+                <div class="flex gap-1 mt-1">
+                    <button onclick="resetMatchaGame()" class="pixel-btn bg-red-300 flex-1 p-2 text-center font-bold">🔄 RE-MAKE</button>
+                    <button onclick="completeMatchaGame()" class="pixel-btn bg-matcha flex-1 p-2 text-center font-bold">🍵 FINISH & UNLOCK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPOTIFY & PINTEREST & F1 MODALS -->
+    <div id="spotify-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative">
+            <button onclick="closeModal('spotify-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold text-center mb-4">🎧 NURE'S SPOTIFY PLAYLIST</div>
+            <div class="bg-gray-100 p-6 pixel-box text-center text-[7px] flex flex-col items-center gap-3">
+                <span class="text-3xl">🎵</span>
+                <p>NURE'S SPOTIFY PLAYLIST</p>
+                <iframe src="https://open.spotify.com/embed/playlist/5VMhuF11DdY9wPRLGmM8Gn?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="pinterest-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center">
+            <button onclick="closeModal('pinterest-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold mb-4">📖 PINTEREST MOODBOARD</div>
+            <div class="bg-pink-light p-6 pixel-box text-center text-[7px] flex flex-col items-center gap-3">
+                <span class="text-3xl">🖼️</span>
+                <p>CLICK BELOW TO VISIT NURE'S PINTEREST BOARD!</p>
+                <a href="https://pin.it/73fDwptp8" target="_blank" class="pixel-btn bg-pink-300 p-3 w-full block font-bold text-center text-[8px] no-underline">
+                    ✨ OPEN NURE'S PINTEREST BOARD ✨
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="f1-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white pixel-box p-6 relative text-center">
+            <button onclick="closeModal('f1-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
+            <div class="text-xs font-bold mb-4">🏎️ FORMULA 1 PADDOCK</div>
+            <div class="bg-red-500 text-white p-4 pixel-box mb-3 text-[8px]">
+                NEXT RACE: MONACO GRAND PRIX
+                <div class="text-sm font-bold my-2">04D : 12H : 30M</div>
+            </div>
+            <div class="text-[6px] text-gray-600">FAVORITE DRIVER MOODBOARD & RACE STATS</div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Retro Click Sound Synthesizer
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playClickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('.pixel-btn') || e.target.closest('.draggable')) {
+                playClickSound();
+            }
+        });
+
+        // Passcode Logic
+        let inputCode = "";
+        const correctCode = "0410";
+
+        function pressKey(num) {
+            if (inputCode.length < 4) {
+                inputCode += num;
+                updateDots();
+            }
+        }
+
+        function clearKey() {
+            inputCode = "";
+            updateDots();
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('#passcode-dots div');
+            dots.forEach((dot, idx) => {
+                if (idx < inputCode.length) {
+                    dot.classList.add('bg-black');
+                    dot.classList.remove('bg-white');
+                } else {
+                    dot.classList.remove('bg-black');
+                    dot.classList.add('bg-white');
+                }
+            });
+        }
+
+        function checkPass() {
+            if (inputCode === correctCode) {
+                document.getElementById('lock-screen').style.display = 'none';
+                triggerNotification("Welcome back to your cozy desk, Nure! ✨");
+            } else {
+                document.getElementById('passcode-msg').innerText = "WRONG CODE! TRY AGAIN";
+                clearKey();
+            }
+        }
+
+        // Modals Logic
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // Birthday Cake Candle Blowing & Remake Logic
+        function blowCandles() {
+            document.getElementById('flame-1').style.display = 'none';
+            document.getElementById('flame-2').style.display = 'none';
+            document.getElementById('flame-3').style.display = 'none';
+            document.getElementById('cake-status').innerText = "🎉 Yay! Candles blown out! All your birthday wishes are coming true, Nure! ✨";
+            triggerNotification("🎂 Happy Birthday Nure! Candles blown out successfully!");
+            
+            for (let i = 0; i < 15; i++) {
+                const conf = document.createElement('div');
+                conf.innerText = ['🎉', '✨', '💖', '🎂'][Math.floor(Math.random() * 4)];
+                conf.className = 'absolute text-xl pointer-events-none z-50 animate-bounce';
+                conf.style.left = Math.random() * window.innerWidth + 'px';
+                conf.style.top = Math.random() * window.innerHeight + 'px';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 3000);
+            }
+        }
+
+        function resetCake() {
+            document.getElementById('flame-1').style.display = 'block';
+            document.getElementById('flame-2').style.display = 'block';
+            document.getElementById('flame-3').style.display = 'block';
+            document.getElementById('cake-status').innerText = "Click the button below to blow out the candles and make a wish!";
+            triggerNotification("🎂 Cake remade with fresh candles!");
+        }
+
+        // Mochi Bunny Tamagotchi Logic
+        let bunnyHappiness = 100;
+        const bunnyChatLines = [
+            "Mochi is super happy right now! 🐰💖",
+            "Nure is the best bunny mom ever! ✨",
+            "Mochi wants a fresh cup of matcha too! 🍵",
+            "So many headpats! Purr... well bunnies don't purr, but yay! 🌸"
+        ];
+
+        function feedBunny(type) {
+            bunnyHappiness += 10;
+            if (bunnyHappiness > 100) bunnyHappiness = 100;
+            updateBunnyUI();
+            const chat = document.getElementById('bunny-chat');
+            if (type === 'matcha') {
+                chat.innerText = "🍵 Mochi happily munched the matcha treat! Happiness +10%";
+            } else {
+                chat.innerText = "💖 Mochi is doing happy hops from your headpats! Happiness +10%";
+            }
+            triggerNotification("🐰 Mochi's happiness increased!");
+        }
+
+        function updateBunnyUI() {
+            document.getElementById('bunny-happiness-val').innerText = bunnyHappiness;
+            document.getElementById('bunny-heart-count').innerText = bunnyHappiness;
+            document.getElementById('bunny-meter-bar').style.width = bunnyHappiness + '%';
+        }
+
+        // Comfort Hug Activation
+        function triggerComfortHug() {
+            if (!isNight) toggleDayNight();
+            closeModal('hug-modal');
+            triggerNotification("🧸 Comfort Hug Activated! Mochi sends warm snuggles.");
+            const bubble = document.getElementById('bunny-bubble');
+            bubble.innerText = "Don't worry Nure, everything's gonna be okay! 💖";
+            bubble.classList.remove('hidden');
+            setTimeout(() => { bubble.classList.add('hidden'); }, 5000);
+        }
+
+        // Compliment Jar Logic
+        const jarCompliments = [
+            "✨ 'You are the first person we text when wild kalesh happens because you always got our back!'",
+            "🌸 'Your laugh is literally the best sound in the world.'",
+            "🍵 'You manage to crash out and slay at the exact same time. Absolute icon.'",
+            "💖 'Your heart is so genuinely kind and pure, Nure.'",
+            "⭐ 'You deserve all the success and happiness in the universe! (And yes, happiness aka us).'",
+            "🌙 'Even when we talk less, you always have a permanent special place in our hearts.'"
+        ];
+        let jarOpenedCount = 0;
+
+        function pullJarNote() {
+            const msgBox = document.getElementById('jar-message-box');
+            const randomNote = jarCompliments[Math.floor(Math.random() * jarCompliments.length)];
+            msgBox.innerText = randomNote;
+            jarOpenedCount++;
+            document.getElementById('jar-count').innerText = jarOpenedCount;
+        }
+
+        // Cassette Player Synthesizer & Logic
+        let cassettePlaying = false;
+        let melodyInterval = null;
+        let cassetteMasterGain = null;
+
+        function openCassetteModal() {
+            closeModal('wax-modal');
+            openModal('cassette-modal');
+            if (!cassettePlaying) {
+                toggleCassettePlay();
+            }
+        }
+
+        async function toggleCassettePlay() {
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            
+            cassettePlaying = !cassettePlaying;
+            const btn = document.getElementById('cassette-play-btn');
+            const status = document.getElementById('cassette-status');
+            const r1 = document.getElementById('cassette-reel-1');
+            const r2 = document.getElementById('cassette-reel-2');
+
+            if (cassettePlaying) {
+                btn.innerText = "⏸️ PAUSE CASSETTE";
+                status.innerText = "Playing heartfelt Lo-Fi friendship melody... 🎶";
+                r1.style.animation = "spin 2s linear infinite";
+                r2.style.animation = "spin 2s linear infinite";
+
+                cassetteMasterGain = audioCtx.createGain();
+                cassetteMasterGain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                cassetteMasterGain.connect(audioCtx.destination);
+
+                const notes = [261.63, 329.63, 392.00, 523.25, 440.00, 349.23];
+                let noteIndex = 0;
+
+                melodyInterval = setInterval(() => {
+                    if (!cassettePlaying) return;
+                    try {
+                        const osc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(notes[noteIndex], audioCtx.currentTime);
+                        
+                        noteGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                        noteGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+                        
+                        osc.connect(noteGain);
+                        noteGain.connect(cassetteMasterGain);
+                        
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.6);
+
+                        noteIndex = (noteIndex + 1) % notes.length;
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }, 400);
+
+            } else {
+                btn.innerText = "▶ RESUME CASSETTE";
+                status.innerText = "Cassette paused.";
+                r1.style.animation = "none";
+                r2.style.animation = "none";
+
+                if (melodyInterval) {
+                    clearInterval(melodyInterval);
+                    melodyInterval = null;
+                }
+                if (cassetteMasterGain) {
+                    cassetteMasterGain.disconnect();
+                    cassetteMasterGain = null;
+                }
+            }
+        }
+
+        // Draggable Desk Items Implementation
+        document.querySelectorAll('.draggable').forEach(el => {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            el.addEventListener('pointerdown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = el.offsetLeft;
+                initialY = el.offsetTop;
+                el.setPointerCapture(e.pointerId);
+                el.style.zIndex = 100;
+            });
+
+            el.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                el.style.left = (initialX + dx) + 'px';
+                el.style.top = (initialY + dy) + 'px';
+            });
+
+            el.addEventListener('pointerup', (e) => {
+                isDragging = false;
+                el.releasePointerCapture(e.pointerId);
+                el.style.zIndex = 10;
+            });
+        });
+
+        // Day/Night Lighting Toggle
+        let isNight = false;
+        function toggleDayNight() {
+            isNight = !isNight;
+            document.body.classList.toggle('night-mode', isNight);
+            const btn = document.getElementById('btn-theme');
+            btn.innerText = isNight ? '🌙 Night' : '☀️ Day';
+            btn.className = isNight ? 'pixel-btn bg-indigo-900 text-white text-[7px] p-2' : 'pixel-btn bg-yellow-200 text-[7px] p-2';
+        }
+
+        // Tamagotchi Bunny Pet Interactivity on Main Desk Click
+        const bunnyMessages = [
+            "Hop hop! Nure is my favorite human! 🐰",
+            "Mochi wants a sip of fresh matcha! 🍵",
+            "Nure, time for a quick cozy break! ✨",
+            "You're doing amazing today, Nure! 💖"
+        ];
+        function petBunny() {
+            const bubble = document.getElementById('bunny-bubble');
+            const randomMsg = bunnyMessages[Math.floor(Math.random() * bunnyMessages.length)];
+            bubble.innerText = randomMsg;
+            bubble.classList.remove('hidden');
+            setTimeout(() => { bubble.classList.add('hidden'); }, 3000);
+        }
+
+        // Sticker Mode Decorator
+        let stickerMode = false;
+        function toggleStickerMode() {
+            stickerMode = !stickerMode;
+            const btn = document.getElementById('btn-sticker');
+            btn.style.backgroundColor = stickerMode ? '#f472b6' : '#ffc0cb';
+            triggerNotification(stickerMode ? "Sticker Mode ON! Click anywhere on the desk." : "Sticker Mode OFF.");
+        }
+
+        const roomArea = document.getElementById('room-canvas-area');
+        roomArea.addEventListener('click', (e) => {
+            if (stickerMode && (e.target === roomArea || e.target.classList.contains('desk-surface'))) {
+                const stickers = ['💖', '✨', '🌸', '🍵', '⭐', '🐰'];
+                const sticker = document.createElement('div');
+                sticker.innerText = stickers[Math.floor(Math.random() * stickers.length)];
+                sticker.className = 'absolute text-xl pointer-events-none z-40';
+                const rect = roomArea.getBoundingClientRect();
+                sticker.style.left = (e.clientX - rect.left) + 'px';
+                sticker.style.top = (e.clientY - rect.top) + 'px';
+                roomArea.appendChild(sticker);
+            }
+        });
+
+        // Live Notifications
+        function triggerNotification(text) {
+            const notif = document.getElementById('live-notification');
+            document.getElementById('notif-text').innerText = text;
+            notif.classList.remove('hidden');
+            setTimeout(() => { notif.classList.add('hidden'); }, 4000);
+        }
+
+        // Unlockable Journal Entries
+        let unlockedEntries = { nail: false, matcha: false, art: false };
+        function updateJournalCount() {
+            let count = Object.values(unlockedEntries).filter(Boolean).length;
+            document.getElementById('journal-count').innerText = count;
+            let content = "";
+            if (unlockedEntries.nail) content += "💅 Nail Salon Entry:\nDesigned the ultimate pixel nail set with cute charms and pastel polish!\n\n";
+            if (unlockedEntries.matcha) content += "🍵 Matcha Lab Entry:\nCrafted a delicious iced matcha blend topped with sweet foam and boba.\n\n";
+            if (unlockedEntries.art) content += "🎨 Art Easel Entry:\nDrew a beautiful celestial masterpiece on the retro canvas.\n\n";
+            if (count === 0) content = "Complete mini-games (Nail Salon, Matcha Maker, Art Easel) to unlock your secret journal lore!";
+            document.getElementById('journal-content').innerText = content;
+        }
+
+        function completeNailGame() {
+            unlockedEntries.nail = true;
+            updateJournalCount();
+            closeModal('nail-modal');
+            triggerNotification("✨ New Journal Entry Unlocked from Nail Salon!");
+        }
+
+        function completeMatchaGame() {
+            unlockedEntries.matcha = true;
+            updateJournalCount();
+            closeModal('matcha-modal');
+            triggerNotification("✨ New Journal Entry Unlocked from Matcha Lab!");
+        }
+
+        function completeArtGame() {
+            unlockedEntries.art = true;
+            updateJournalCount();
+            closeModal('easel-modal');
+            triggerNotification("✨ New Journal Entry Unlocked from Art Easel!");
+        }
+
+        // Kade Mitchell Book Letters Data
+        const bookLetters = {
+            1: {
+                title: "INSATIABLE - LETTER FROM KADE",
+                text: "My Dearest Nure,\n\nFrom the moment you entered my world, everything changed. You became the single obsession I never saw coming, and the only light in my absolute darkness.\n\nThey say some hunger can never be satisfied, but with you, every glance, every word, every heartbeat feels like home.\n\nYours always,\nKade Mitchell"
+            },
+            2: {
+                title: "VORACIOUS - LETTER FROM KADE",
+                text: "Nure,\n\nEven through the chaos and unforgiving shadows, I could never forget you. Your strength, your passion, your warmth—they are etched permanently into my soul.\n\nI would tear down the world a thousand times over just to protect the smile on your face.\n\nForever tied to you,\nKade Mitchell"
+            },
+            3: {
+                title: "RESTITUTION - LETTER FROM KADE",
+                text: "To My Everything, Nure,\n\nWe survived the darkness, and here in the light, I promise you my entire life. No distance, no obstacles, no shadow will ever come between us again.\n\nYou are my sanctuary and my end game.\n\nAll my love forever,\nKade Mitchell"
+            }
+        };
+
+        function openBook(title, num) {
+            document.getElementById('book-title').innerText = bookLetters[num].title;
+            document.getElementById('book-letter').innerText = bookLetters[num].text;
+            openModal('book-modal');
+        }
+
+        // Wax Seal Notes Data
+        const waxNotes = {
+            1: `My dearest Nure,\n\nSometimes I think about how lucky I am that our paths crossed, because meeting you has genuinely been one of the best decisions life has ever made for me. There was something about you from the very beginning that felt so familiar, so warm, so easy. Talking to you never felt like meeting someone new, it felt like finding someone I had somehow known for years and simply found again.\n\nThere was never any need to force a conversation, or wonder whether we would understand each other. Everything just happened so naturally, like our friendship had already existed somewhere and we were simply picking up where we had left off. That kind of connection is so rare, and I feel incredibly lucky that I get to experience it with you.\n\nBeing your friend has never felt like a responsibility or a chore. It is one of those beautiful, effortless bonds that people spend years searching for, the kind where you can simply exist beside someone and still feel understood, loved, and appreciated. With you, I never feel like I have to be anything other than myself, and that comfort is something I treasure more than I can put into words.\n\nAnd Nure, you are genuinely so beautiful, inside and out. There is such a softness in you, the way you love, the way you nurture the people and things around you, the compassion you carry for everything, it is something I admire so deeply. You have this beautiful ability to care so wholeheartedly, and I hope you always know how special that makes you.\n\nYou inspire me in ways you probably do not even realise. Sometimes it is in the way you love, sometimes in the way you understand, and sometimes simply in the person you are. There is so much goodness in you, and knowing you has made me appreciate the beauty of having someone whose presence itself feels comforting.\n\nI love you so much, Nure, and I adore every little part of the person you are. I am so grateful for every conversation, every laugh, every little moment, and for the kind of friendship that never needed to be forced into existence. It simply happened, naturally and beautifully, and somehow became one of the most precious things in my life.\n\nIf I could choose the people I get to meet in every lifetime, I think I would always find my way back to you. 🤍\n\n- from moon.`,
+            2: `Dear Nure jaanu,\nFirst of all, happiest birthday to you 😝🤍\n\nI have known you for so long and you have always been such a good friend, always there for us and always so supportive. Even though we don’t talk as much as we used to, I hope you know that you will always have a special place in my heart, and I’m genuinely so grateful to have you in my life.\n\nYou are such a beautiful person, both inside and out, and I hope you never forget that. You have such a kind heart and the way you care about the people around you is something I’ve always appreciated about you.\nI hope you achieve all the things you wish for and that you always have people around you who appreciate you for the amazing person you are.\n\nNo matter how much or how little we talk, just know that I’ll always be here for you and I’ll always be happy to see you doing well. 🙁🤍\nHappy birthday once again babu, I love you and I hope you have the best day ever 🤍 - from sadi.`,
+            3: `Dear Nure-e-jaan,\nCan't believe it's been years, yes YEARS since i first met you. From simping over characters to getting into kalesh together, we both didn't grow up at all😛 You're still the first person I text when some kalesh happens, because Ik you got my back (and you'll love the tea) You're the most prettiest and fabulous person. You're also super supeerrr sweet person, even though most of the time you taunt me. I have seen you crashing out and slaying at the same time. Everytime i see you achieving something, I feel really proud. You deserve all the happiness. Happiness aka me. You deserve me and I deserve you. So don't bring those hoes between us. You're my favourite and only hoe and biwi. (Alongside zayna, sami and sadi) It's getting long. So. HAPPY BIRTHDAY BABY. WISHING YOU A VERY VERY VERY LONG, HAPPY AND HEALTHY LIFE.\nKisses from Taraaa. Let's have sex sux soon. - from tara`,
+            4: `Dear Nure,\n\nIt's been more than 2 years since we have known each other, and during this whole time you have always been one of the best people I have ever met. I always wish that we met sooner but unfortunately we can't go back in time. But I'll always be grateful to have such a wonderful friend like you, who never hesitates before doing something for her friends. Who is always trying to make her friends special in any way she can. You are not only gorgeous but equallyyy beautiful from inside too. I hope this day brings you a lot of joy and makes all of your wishes true. I love you to the moon and back.\n\nYours forever,\nSamiya.`
+        };
+
+        let currentNote = 1;
+        let scratchProgress = 0;
+
+        function openWaxSeal(num) {
+            currentNote = num;
+            scratchProgress = 0;
+            updateScratchUI();
+            document.getElementById('seal-area').classList.remove('hidden');
+            document.getElementById('note-container').classList.add('hidden');
+            openModal('wax-modal');
+        }
+
+        function rubSeal() {
+            scratchProgress += 10;
+            if (scratchProgress > 100) scratchProgress = 100;
+            updateScratchUI();
+
+            if (scratchProgress >= 100) {
+                setTimeout(() => {
+                    document.getElementById('seal-area').classList.add('hidden');
+                    document.getElementById('note-content').innerText = waxNotes[currentNote];
+                    document.getElementById('note-container').classList.remove('hidden');
+                }, 200);
+            }
+        }
+
+        function updateScratchUI() {
+            document.getElementById('scratch-progress-bar').style.width = scratchProgress + '%';
+            document.getElementById('scratch-pct').innerText = scratchProgress;
+        }
+
+        // Nail Salon Game Logic
+        function setNailShape(shape) {
+            const nails = [document.getElementById('nail-1'), document.getElementById('nail-2'), document.getElementById('nail-3')];
+            nails.forEach(nail => {
+                nail.className = "border-2 border-black relative transition-all duration-300 flex flex-col items-center overflow-hidden ";
+                if (shape === 'square') nail.classList.add('w-9', 'h-20', 'rounded-t-none');
+                else if (shape === 'almond') nail.classList.add('w-8', 'h-22', 'rounded-t-xl');
+                else if (shape === 'coffin') nail.classList.add('w-9', 'h-24', 'rounded-t-sm');
+                else if (shape === 'stiletto') nail.classList.add('w-6', 'h-26', 'rounded-t-full');
+            });
+        }
+
+        function setNailColor(color) {
+            document.getElementById('nail-1').style.backgroundColor = color;
+            document.getElementById('nail-2').style.backgroundColor = color;
+            document.getElementById('nail-3').style.backgroundColor = color;
+        }
+
+        function setNailPattern(pattern) {
+            const patterns = [document.getElementById('nail-pattern-1'), document.getElementById('nail-pattern-2'), document.getElementById('nail-pattern-3')];
+            patterns.forEach(pat => {
+                pat.classList.remove('hidden');
+                if (pattern === 'french') pat.className = "w-full h-4 bg-white border-b-2 border-black";
+                else if (pattern === 'ombre') pat.className = "w-full h-8 bg-pink-200 opacity-70";
+                else if (pattern === 'stars') { pat.className = "w-full h-full flex items-center justify-center text-[8px]"; pat.innerText = "✨"; }
+                else if (pattern === 'hearts') { pat.className = "w-full h-full flex items-center justify-center text-[8px]"; pat.innerText = "💖"; }
+            });
+        }
+
+        // Matcha Maker Game Logic
+        function setMatchaColor(color) {
+            document.getElementById('matcha-liquid').style.backgroundColor = color;
+        }
+
+        function setMugShape(shape) {
+            const cup = document.getElementById('matcha-cup');
+            cup.className = "border-4 border-black bg-white/70 relative overflow-hidden flex flex-col justify-end transition-all duration-300 ";
+            if (shape === 'classic') {
+                cup.classList.add('w-24', 'h-32', 'rounded-b-2xl');
+            } else if (shape === 'tumbler') {
+                cup.classList.add('w-20', 'h-36', 'rounded-b-md');
+            } else if (shape === 'heart') {
+                cup.classList.add('w-28', 'h-32', 'rounded-b-3xl');
+            }
+        }
+
+        function setStraw(type) {
+            const straw = document.getElementById('straw-display');
+            straw.classList.remove('hidden');
+            if (type === 'pink') {
+                straw.className = "absolute top-2 w-2 h-20 bg-pink-400 border border-black z-25 transform -rotate-12 origin-bottom";
+            } else if (type === 'striped') {
+                straw.className = "absolute top-2 w-2.5 h-20 bg-gradient-to-r from-red-400 via-white to-red-400 border border-black z-25 transform -rotate-12 origin-bottom";
+            }
+        }
+
+        function toggleTopping(type) {
+            if (type === 'boba') {
+                document.getElementById('boba-container').classList.toggle('hidden');
+            } else if (type === 'ice') {
+                document.getElementById('ice-container').classList.toggle('hidden');
+            } else if (type === 'foam') {
+                document.getElementById('matcha-foam').classList.toggle('hidden');
+            }
+        }
+
+        function resetMatchaGame() {
+            setMugShape('classic');
+            setMatchaColor('#34D399');
+            document.getElementById('straw-display').classList.add('hidden');
+            document.getElementById('boba-container').classList.add('hidden');
+            document.getElementById('ice-container').classList.add('hidden');
+            document.getElementById('matcha-foam').classList.add('hidden');
+            triggerNotification("🍵 Drink re-made! Start fresh.");
+        }
+
+        // Celestial Art Easel Logic & Remake Option
+        const canvas = document.getElementById('paint-canvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+        let currentColor = '#000000';
+
+        canvas.addEventListener('mousedown', startDraw);
+        canvas.addEventListener('mouseup', stopDraw);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e) => { startDraw(e.touches[0]); });
+        canvas.addEventListener('touchend', stopDraw);
+        canvas.addEventListener('touchmove', (e) => { draw(e.touches[0]); e.preventDefault(); });
+
+        function startDraw(e) { painting = true; draw(e); }
+        function stopDraw() { painting = false; ctx.beginPath(); }
+        function setBrushColor(color) { currentColor = color; document.getElementById('color-picker').value = color; }
+        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); triggerNotification("🎨 Canvas cleared for a fresh start!"); }
+
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentColor;
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        // Audio Synthesizer (Nature Sounds)
+        const activeNodes = {};
+
+        function toggleAudio(type) {
+            const btn = document.getElementById(`btn-${type}`);
+            if (activeNodes[type]) {
+                activeNodes[type].stop();
+                delete activeNodes[type];
+                btn.classList.remove('bg-matcha-dark');
+                btn.classList.add('bg-pink-light');
+            } else {
+                const bufferSize = audioCtx.sampleRate * 2;
+                const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+
+                const whiteNoise = audioCtx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+                whiteNoise.loop = true;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = type === 'rain' ? 'lowpass' : 'bandpass';
+                filter.frequency.value = type === 'rain' ? 800 : 400;
+
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = 0.15;
+
+                whiteNoise.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                whiteNoise.start();
+                activeNodes[type] = whiteNoise;
+
+                btn.classList.remove('bg-pink-light');
+                btn.classList.add('bg-matcha-dark');
+            }
+        }
+    </script>
+</body>
+</html>
