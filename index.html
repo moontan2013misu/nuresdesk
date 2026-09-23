@@ -424,12 +424,12 @@
             <button onclick="closeModal('wax-modal')" class="absolute top-3 right-3 bg-red-500 text-white font-bold px-2 py-1 border-2 border-black text-xs">X</button>
             
             <div id="seal-area" class="my-4 flex flex-col items-center">
-                <p class="text-[8px] mb-3 font-bold text-pink-600">TAP / SCRATCH THE HEART SEAL TO BREAK IT!</p>
-                <div class="w-28 h-8 bg-gray-200 border-2 border-black rounded mb-2 overflow-hidden relative">
+                <p class="text-[8px] mb-3 font-bold text-pink-600">TAP THE HEART SEAL TO BREAK IT!</p>
+                <div class="w-28 h-8 bg-gray-200 border-2 border-black rounded mb-4 overflow-hidden relative">
                     <div id="scratch-progress-bar" class="h-full bg-pink-400 w-0 transition-all duration-75"></div>
-                    <span class="absolute inset-0 text-[6px] flex items-center justify-center font-bold">SCRATCH: <span id="scratch-pct">0</span>%</span>
+                    <span class="absolute inset-0 text-[6px] flex items-center justify-center font-bold">PROGRESS: <span id="scratch-pct">0</span>%</span>
                 </div>
-                <button id="heart-seal-btn" onclick="rubSeal()" ontouchstart="rubSeal()" class="w-24 h-24 rounded-2xl bg-pink-500 border-4 border-black text-white text-2xl font-bold pixel-btn flex items-center justify-center shadow-lg cursor-pointer">
+                <button id="heart-seal-btn" onclick="rubSeal()" class="w-24 h-24 rounded-2xl bg-pink-500 border-4 border-black text-white text-2xl font-bold pixel-btn flex items-center justify-center shadow-lg cursor-pointer">
                     💖
                 </button>
             </div>
@@ -984,7 +984,7 @@
             openModal('book-modal');
         }
 
-        // Wax Seal Notes Data & Fast Scratch Logic
+        // Wax Seal Notes Data & Fast Tap Logic
         const waxNotes = {
             1: `My dearest Nure,\n\nSometimes I think about how lucky I am that our paths crossed, because meeting you has genuinely been one of the best decisions life has ever made for me. There was something about you from the very beginning that felt so familiar, so warm, so easy. Talking to you never felt like meeting someone new, it felt like finding someone I had somehow known for years and simply found again.\n\nThere was never any need to force a conversation, or wonder whether we would understand each other. Everything just happened so naturally, like our friendship had already existed somewhere and we were simply picking up where we had left off. That kind of connection is so rare, and I feel incredibly lucky that I get to experience it with you.\n\nBeing your friend has never felt like a responsibility or a chore. It is one of those beautiful, effortless bonds that people spend years searching for, the kind where you can simply exist beside someone and still feel understood, loved, and appreciated. With you, I never feel like I have to be anything other than myself, and that comfort is something I treasure more than I can put into words.\n\nAnd Nure, you are genuinely so beautiful, inside and out. There is such a softness in you, the way you love, the way you nurture the people and things around you, the compassion you carry for everything, it is something I admire so deeply. You have this beautiful ability to care so wholeheartedly, and I hope you always know how special that makes you.\n\nYou inspire me in ways you probably do not even realise. Sometimes it is in the way you love, sometimes in the way you understand, and sometimes simply in the person you are. There is so much goodness in you, and knowing you has made me appreciate the beauty of having someone whose presence itself feels comforting.\n\nI love you so much, Nure, and I adore every little part of the person you are. I am so grateful for every conversation, every laugh, every little moment, and for the kind of friendship that never needed to be forced into existence. It simply happened, naturally and beautifully, and somehow became one of the most precious things in my life.\n\nIf I could choose the people I get to meet in every lifetime, I think I would always find my way back to you. 🤍\n\n- from moon.`,
             2: `Dear Nure jaanu,\nFirst of all, happiest birthday to you 😝🤍\n\nI have known you for so long and you have always been such a good friend, always there for us and always so supportive. Even though we don’t talk as much as we used to, I hope you know that you will always have a special place in my heart, and I’m genuinely so grateful to have you in my life.\n\nYou are such a beautiful person, both inside and out, and I hope you never forget that. You have such a kind heart and the way you care about the people around you is something I’ve always appreciated about you.\nI hope you achieve all the things you wish for and that you always have people around you who appreciate you for the amazing person you are.\n\nNo matter how much or how little we talk, just know that I’ll always be here for you and I’ll always be happy to see you doing well. 🙁🤍\nHappy birthday once again babu, I love you and I hope you have the best day ever 🤍 - from sadi.`,
@@ -1005,7 +1005,7 @@
         }
 
         function rubSeal() {
-            scratchProgress += 34; // Opens instantly in 3 taps/clicks
+            scratchProgress += 34; // Fills up in just 3 taps/clicks
             if (scratchProgress > 100) scratchProgress = 100;
             updateScratchUI();
 
@@ -1014,7 +1014,7 @@
                     document.getElementById('seal-area').classList.add('hidden');
                     document.getElementById('note-content').innerText = waxNotes[currentNote];
                     document.getElementById('note-container').classList.remove('hidden');
-                }, 200);
+                }, 150);
             }
         }
 
